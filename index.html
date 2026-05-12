@@ -387,7 +387,12 @@ let weightChart = null;
 
 // --- INIT ---
 async function init() {
-  const { data: { session } } = await sb.auth.getSession();
+  let session = null;
+  for (let i = 0; i < 3; i++) {
+    const { data } = await sb.auth.getSession();
+    if (data?.session) { session = data.session; break; }
+    await new Promise(r => setTimeout(r, 500));
+  }
   if (session) {
     currentUser = session.user;
     await loadProfile();
@@ -662,6 +667,13 @@ function renderRing(val, goal) {
 }
 
 async function toggleCup(idx) {
+  if (!currentUser || !currentProfile) {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { showScreen('auth'); return; }
+    currentUser = session.user;
+    await loadProfile();
+    return;
+  }
   const perCup = currentProfile.goal_water / 10;
   const filled = Math.round(todayWater / perCup);
   todayWater = idx < filled ? Math.round(idx * perCup) : Math.round((idx+1) * perCup);

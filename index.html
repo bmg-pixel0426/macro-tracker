@@ -482,7 +482,7 @@ function calcOnboard() {
   const carb = Math.round((kcal - prot*4 - fat*9) / 4);
   const sugar = Math.round(carb * 0.2);
 
-  calculatedGoals = { kcal, prot, carb, fat, sugar, water:2500, weight_kg:w, height_cm:h, age, sex, activity_level:act, goal_weight_kg:gw, goal_date:gd };
+  calculatedGoals = { goal_kcal:kcal, goal_prot:prot, goal_carb:carb, goal_fat:fat, goal_sugar:sugar, goal_water:2500, weight_kg:w, height_cm:h, age, sex, activity_level:act, goal_weight_kg:gw, goal_date:gd };
 
   document.getElementById('prev-kcal').textContent = kcal;
   document.getElementById('prev-prot').textContent = prot;

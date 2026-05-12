@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Nutri — Cardápio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --cream: #FAF8F4;
+    --cream-2: #F2EEE6;
+    --cream-3: #E8E2D8;
+    --ink: #1A1714;
+    --ink-2: #4A4540;
+    --ink-3: #8A8178;
+    --accent: #C8502A;
+    --accent-light: #F5E6E0;
+    --accent-2: #2A7A5A;
+    --accent-2-light: #E0F0E8;
+    --blue: #2A4C8A;
+    --gold: #B8860B;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 20px rgba(26,23,20,0.08);
+    --shadow-lg: 0 8px 40px rgba(26,23,20,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { min-height: 100%; background: var(--cream); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 15px; }
+
+  .app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+
+  .header { padding: 1.5rem 1.25rem 0; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.25rem; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--ink); }
+  .header-sub { font-size: 13px; color: var(--ink-3); }
+
+  .nav { display: flex; border-bottom: 1.5px solid var(--cream-3); margin: 1.25rem 1.25rem 0; }
+  .nav-tab { flex: 1; padding: 10px 6px; text-align: center; font-size: 12px; font-weight: 500; color: var(--ink-3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1.5px; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; letter-spacing: 0.03em; }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .content { flex: 1; padding: 1.25rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-intro { font-size: 13px; color: var(--ink-3); line-height: 1.6; margin-bottom: 1rem; }
+
+  .btn-refresh { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: white; border: none; border-radius: var(--radius-sm); padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 1.25rem; }
+  .btn-refresh:hover { background: var(--accent); }
+  .btn-refresh:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-refresh .spin { width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .cached-note { font-size: 11px; color: var(--ink-3); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 4px; }
+
+  /* MEAL CARDS */
+  .meal-card { background: white; border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 12px; box-shadow: var(--shadow); animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .meal-card-eyebrow { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .meal-card-title { font-family: 'DM Serif Display', serif; font-size: 1.25rem; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
+  .meal-card-prep { font-size: 11px; color: var(--ink-3); margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+  .meal-card-desc { font-size: 13px; color: var(--ink-2); line-height: 1.65; }
+  .meal-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .pill { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; }
+  .pill-kcal { background: var(--accent-light); color: var(--accent); }
+  .pill-prot { background: var(--accent-2-light); color: var(--accent-2); }
+  .pill-carb { background: #E0E8F5; color: var(--blue); }
+  .pill-fat { background: #F5F0DC; color: var(--gold); }
+
+  /* MARMITA */
+  .marmita-section { margin-bottom: 1.25rem; }
+  .marmita-label { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .marmita-card { background: white; border-radius: var(--radius); padding: 1.25rem 1.5rem; box-shadow: var(--shadow); margin-bottom: 10px; }
+  .marmita-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--ink); margin-bottom: 6px; }
+  .marmita-desc { font-size: 13px; color: var(--ink-2); line-height: 1.65; }
+  .marmita-prep { font-size: 11px; color: var(--ink-3); margin-top: 6px; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag { font-size: 12px; background: var(--cream-2); color: var(--ink-2); padding: 4px 10px; border-radius: 20px; }
+  .variation-list { margin-top: 4px; }
+  .variation-item { padding: 10px 0; border-bottom: 0.5px solid var(--cream-3); font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+  .variation-item:last-child { border-bottom: none; }
+  .variation-day { font-weight: 600; color: var(--ink); }
+  .tips-card { background: var(--accent-light); border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 8px; }
+  .tips-label { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .tips-text { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+
+  .loading-card { background: white; border-radius: var(--radius); padding: 2rem; text-align: center; box-shadow: var(--shadow); }
+  .loading-card-spin { width: 24px; height: 24px; border: 2.5px solid var(--cream-3); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 10px; }
+  .loading-card-text { font-size: 13px; color: var(--ink-3); }
+  .placeholder-card { background: white; border-radius: var(--radius); padding: 2rem; text-align: center; box-shadow: var(--shadow); color: var(--ink-3); font-size: 13px; }
+
+  @media (min-width: 480px) {
+    .app { border-left: 1px solid var(--cream-3); border-right: 1px solid var(--cream-3); }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <div class="logo">nutri</div>
+      <div style="font-size:12px;color:var(--ink-3);margin-top:6px">cardápio</div>
+    </div>
+    <div class="header-sub" id="header-date">—</div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-tab active" onclick="showTab('cafe')">Café da manhã</button>
+    <button class="nav-tab" onclick="showTab('jantar')">Jantar</button>
+    <button class="nav-tab" onclick="showTab('marmita')">Marmita</button>
+  </div>
+
+  <div class="content">
+    <div class="section active" id="tab-cafe">
+      <p class="section-intro">3 sugestões para o café da manhã de hoje — variadas, proteicas e dentro das suas metas.</p>
+      <div id="cafe-cached" class="cached-note"></div>
+      <button class="btn-refresh" id="btn-cafe" onclick="loadMeal('cafe')">↻ Novas sugestões</button>
+      <div id="cafe-content"><div class="placeholder-card">Clique em "Novas sugestões" para gerar.</div></div>
+    </div>
+
+    <div class="section" id="tab-jantar">
+      <p class="section-intro">3 opções de jantar rápido — prontas em até 20 minutos, sem peixe ou frutos do mar.</p>
+      <div id="jantar-cached" class="cached-note"></div>
+      <button class="btn-refresh" id="btn-jantar" onclick="loadMeal('jantar')">↻ Novas sugestões</button>
+      <div id="jantar-content"><div class="placeholder-card">Clique em "Novas sugestões" para gerar.</div></div>
+    </div>
+
+    <div class="section" id="tab-marmita">
+      <p class="section-intro">Plano completo de marmita para preparar no domingo — 5 almoços variados para a semana.</p>
+      <div id="marmita-cached" class="cached-note"></div>
+      <button class="btn-refresh" id="btn-marmita" onclick="loadMeal('marmita')">↻ Novo plano semanal</button>
+      <div id="marmita-content"><div class="placeholder-card">Clique em "Novo plano semanal" para gerar.</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://rzxmdvanktmqjtmluyqd.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_fk-fmN4s9df_Ef6PfW9hfA_EqrKwVEA';
+const FUNCTION_URL = `${SUPABASE_URL}/functions/v1/calculate-macros`;
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.getElementById('header-date').textContent = new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
+
+function showTab(name) {
+  ['cafe','jantar','marmita'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+  });
+  document.querySelectorAll('.nav-tab').forEach((el,i) => {
+    el.classList.toggle('active', ['cafe','jantar','marmita'][i]===name);
+  });
+  loadCached(name);
+}
+
+async function loadCached(type) {
+  try {
+    const { data } = await sb.from('meal_suggestions').select('*').eq('type', type).order('generated_at', { ascending: false }).limit(1).single();
+    if (data) {
+      const dateStr = new Date(data.generated_at).toLocaleDateString('pt-BR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+      document.getElementById(type+'-cached').innerHTML = `⏱ Última geração: ${dateStr}`;
+      if (type === 'marmita') renderMarmita(data.data);
+      else renderMealCards(type, data.data);
+    }
+  } catch(e) {}
+}
+
+async function loadMeal(type) {
+  const btn = document.getElementById('btn-'+type);
+  const contentEl = document.getElementById(type+'-content');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Gerando...';
+  contentEl.innerHTML = `<div class="loading-card"><div class="loading-card-spin"></div><div class="loading-card-text">Gerando sugestões com IA...</div></div>`;
+  try {
+    const resp = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}` },
+      body: JSON.stringify({ type })
+    });
+    const parsed = await resp.json();
+    if (parsed.error) throw new Error(parsed.error);
+
+    // Save to Supabase (upsert by type — keep latest)
+    const { data: existing } = await sb.from('meal_suggestions').select('id').eq('type', type).limit(1).single();
+    if (existing) {
+      await sb.from('meal_suggestions').update({ data: parsed, generated_at: new Date().toISOString() }).eq('id', existing.id);
+    } else {
+      await sb.from('meal_suggestions').insert({ type, data: parsed });
+    }
+
+    const dateStr = new Date().toLocaleDateString('pt-BR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+    document.getElementById(type+'-cached').innerHTML = `⏱ Última geração: ${dateStr}`;
+    if (type === 'marmita') renderMarmita(parsed);
+    else renderMealCards(type, parsed);
+  } catch(e) {
+    contentEl.innerHTML = `<div class="placeholder-card">Erro ao gerar sugestões. Tente novamente.</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = type === 'marmita' ? '↻ Novo plano semanal' : '↻ Novas sugestões';
+  }
+}
+
+const LABELS = ['Uma', 'Duas', 'Três'];
+function renderMealCards(type, meals) {
+  const el = document.getElementById(type+'-content');
+  el.innerHTML = meals.map((m, i) => `
+    <div class="meal-card">
+      <div class="meal-card-eyebrow">Opção ${LABELS[i]||i+1}</div>
+      <div class="meal-card-title">${m.title}</div>
+      ${m.prepTime ? `<div class="meal-card-prep">⏱ ${m.prepTime}</div>` : ''}
+      <div class="meal-card-desc">${m.description}</div>
+      <div class="meal-pills">
+        <span class="pill pill-kcal">${Math.round(m.kcal)} kcal</span>
+        <span class="pill pill-prot">P ${Math.round(m.prot)}g</span>
+        <span class="pill pill-carb">C ${Math.round(m.carb)}g</span>
+        <span class="pill pill-fat">G ${Math.round(m.fat)}g</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderMarmita(plan) {
+  const el = document.getElementById('marmita-content');
+  const vars = (plan.variations||[]).map(v =>
+    `<div class="variation-item"><span class="variation-day">${v.day} —</span> ${v.description}</div>`
+  ).join('');
+  const ingr = (plan.ingredients||[]).map(i => `<span class="tag">${i}</span>`).join('');
+  el.innerHTML = `
+    <div class="marmita-section">
+      <div class="marmita-label">Base da semana</div>
+      <div class="marmita-card">
+        <div class="marmita-title">${plan.base?.title||''}</div>
+        <div class="marmita-desc">${plan.base?.description||''}</div>
+        ${plan.base?.prepTime ? `<div class="marmita-prep">⏱ Preparo: ${plan.base.prepTime}</div>` : ''}
+      </div>
+    </div>
+    <div class="marmita-section">
+      <div class="marmita-label">Proteína</div>
+      <div class="marmita-card">
+        <div class="marmita-title">${plan.protein?.title||''}</div>
+        <div class="marmita-desc">${plan.protein?.description||''}</div>
+      </div>
+    </div>
+    <div class="marmita-section">
+      <div class="marmita-label">Carboidratos</div>
+      <div class="marmita-card"><div class="tag-list">${(plan.carbs||[]).map(c=>`<span class="tag">${c}</span>`).join('')}</div></div>
+    </div>
+    <div class="marmita-section">
+      <div class="marmita-label">Vegetais</div>
+      <div class="marmita-card"><div class="tag-list">${(plan.veggies||[]).map(v=>`<span class="tag">${v}</span>`).join('')}</div></div>
+    </div>
+    <div class="marmita-section">
+      <div class="marmita-label">Como variar nos 5 dias</div>
+      <div class="marmita-card"><div class="variation-list">${vars}</div></div>
+    </div>
+    ${plan.tips ? `<div class="tips-card"><div class="tips-label">Dicas para não enjoar</div><div class="tips-text">${plan.tips}</div></div>` : ''}
+    <div class="marmita-section" style="margin-top:1rem">
+      <div class="marmita-label">Lista de compras</div>
+      <div class="marmita-card"><div class="tag-list">${ingr}</div></div>
+    </div>`;
+}
+
+// Load cached content for default tab
+loadCached('cafe');
+</script>
+</body>
+</html>

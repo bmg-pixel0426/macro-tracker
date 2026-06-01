@@ -248,6 +248,10 @@
   .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 200; transition: transform 0.3s ease; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
+  /* RESET PASSWORD */
+  .reset-wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; background: var(--bg); }
+  .reset-card { background: var(--white); border-radius: var(--radius); padding: 2rem; width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); }
+
   @media (min-width: 480px) {
     .app { border-left: 1px solid var(--bg-3); border-right: 1px solid var(--bg-3); }
   }
@@ -279,6 +283,21 @@
         <button class="btn btn-primary" onclick="doSignup()" style="margin-top:1rem">Criar conta</button>
         <div class="auth-switch">Já tem conta? <a onclick="showLogin()">Entrar</a></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD -->
+<div id="reset-screen" style="display:none">
+  <div class="reset-wrap">
+    <div class="auth-logo" style="margin-bottom:0.25rem">nutri</div>
+    <div class="auth-tagline" style="margin-bottom:2rem">nova senha</div>
+    <div class="reset-card">
+      <div class="auth-title">Criar nova senha</div>
+      <div class="field"><label>Nova senha</label><input type="password" id="reset-pass" placeholder="mínimo 6 caracteres"/></div>
+      <div class="field"><label>Confirmar senha</label><input type="password" id="reset-pass-2" placeholder="repita a senha"/></div>
+      <div id="reset-err" class="err"></div>
+      <button class="btn btn-primary" onclick="doResetPassword()" style="margin-top:1rem">Salvar nova senha</button>
     </div>
   </div>
 </div>
@@ -457,6 +476,25 @@ let isLoggingFood = false;
 
 // --- INIT ---
 async function init() {
+  // Detecta token de reset de senha na URL
+  const hash = window.location.hash;
+  if (hash && hash.includes('type=recovery')) {
+    // Deixa o Supabase processar o token via onAuthStateChange
+    showScreen('auth');
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        currentUser = session.user;
+        showScreen('reset');
+      } else if (event === 'SIGNED_IN' && session && !hash.includes('type=recovery')) {
+        currentUser = session.user;
+        await loadProfile();
+      } else if (event === 'USER_UPDATED') {
+        await loadProfile();
+      }
+    });
+    return;
+  }
+
   // Retry para mobile onde sessão pode demorar
   let session = null;
   for (let i = 0; i < 3; i++) {
@@ -471,12 +509,17 @@ async function init() {
     showScreen('auth');
   }
   sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session) {
+    if (event === 'PASSWORD_RECOVERY') {
+      currentUser = session?.user || currentUser;
+      showScreen('reset');
+    } else if (event === 'SIGNED_IN' && session) {
       currentUser = session.user;
       await loadProfile();
     } else if (event === 'SIGNED_OUT') {
       currentUser = null; currentProfile = null;
       showScreen('auth');
+    } else if (event === 'USER_UPDATED') {
+      await loadProfile();
     }
   });
 }
@@ -510,6 +553,7 @@ async function loadProfile() {
 function showScreen(name) {
   document.getElementById('auth-screen').style.display = name === 'auth' ? 'block' : 'none';
   document.getElementById('onboard-screen').style.display = name === 'onboard' ? 'block' : 'none';
+  document.getElementById('reset-screen').style.display = name === 'reset' ? 'block' : 'none';
   document.getElementById('app-screen').classList.toggle('visible', name === 'app');
 }
 
@@ -546,6 +590,20 @@ async function doSignup() {
 async function doLogout() {
   closeProfile();
   await sb.auth.signOut();
+}
+
+async function doResetPassword() {
+  const pass = document.getElementById('reset-pass').value;
+  const pass2 = document.getElementById('reset-pass-2').value;
+  const err = document.getElementById('reset-err');
+  err.textContent = '';
+  if (!pass || pass.length < 6) { err.textContent = 'Senha deve ter ao menos 6 caracteres.'; return; }
+  if (pass !== pass2) { err.textContent = 'As senhas não coincidem.'; return; }
+  const { error } = await sb.auth.updateUser({ password: pass });
+  if (error) { err.textContent = 'Erro ao salvar. Tente novamente.'; return; }
+  showToast('Senha atualizada!');
+  await new Promise(r => setTimeout(r, 1000));
+  await loadProfile();
 }
 
 // --- ONBOARDING ---

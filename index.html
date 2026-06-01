@@ -404,7 +404,7 @@
 
     <!-- HISTÓRICO -->
     <div class="section" id="section-historico">
-      <div class="section-label" style="margin-top:0">Últimos 7 dias</div>
+      <div class="section-label" style="margin-top:0">Últimos 30 dias</div>
       <div id="history-list"></div>
     </div>
 
@@ -945,7 +945,7 @@ async function loadHistory() {
   if (!await ensureSession()) return;
   const el = document.getElementById('history-list');
   el.innerHTML = '<div class="empty">Carregando...</div>';
-  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 30);
   const { data } = await sb.from('food_logs').select('*').eq('user_id', currentUser.id).gte('logged_date', sevenDaysAgo.toISOString().slice(0,10)).order('logged_date', { ascending: false });
   if (!data?.length) { el.innerHTML = '<div class="empty">Nenhum histórico ainda.</div>'; return; }
   const byDay = {};

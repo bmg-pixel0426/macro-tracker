@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Nutri — Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="apple-touch-icon" href="icon-tracker.png"/>
 <link rel="icon" type="image/png" href="icon-tracker.png"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -15,47 +15,47 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #F0F4FA;
-    --bg-2: #E4EBF5;
-    --bg-3: #D0DCEE;
-    --white: #FFFFFF;
-    --ink: #0D1B2E;
-    --ink-2: #2E3F5C;
-    --ink-3: #6B7E99;
-    --primary: #2563EB;
-    --primary-light: #DBEAFE;
-    --primary-dark: #1D4ED8;
-    --success: #059669;
-    --success-light: #D1FAE5;
-    --warning: #D97706;
-    --warning-light: #FEF3C7;
-    --danger: #C8502A;
-    --danger-light: #FEE2D5;
-    --prot-color: #059669;
-    --carb-color: #2563EB;
-    --fat-color: #D97706;
-    --sugar-color: #C8502A;
+    --bg: #1E2118;
+    --bg-2: #33372A;
+    --bg-3: #454A38;
+    --white: #262A20;
+    --ink: #F3EFE6;
+    --ink-2: #C6C1A9;
+    --ink-3: #8A8570;
+    --primary: #4C8567;
+    --primary-light: #2A3623;
+    --primary-dark: #3D6B52;
+    --success: #4C8567;
+    --success-light: #253226;
+    --warning: #C08A3D;
+    --warning-light: #332B1C;
+    --danger: #C25B4E;
+    --danger-light: #33211D;
+    --prot-color: #4C8567;
+    --carb-color: #C9A24B;
+    --fat-color: #B97D82;
+    --sugar-color: #6E7FA0;
     --radius: 16px;
     --radius-sm: 10px;
-    --shadow: 0 2px 16px rgba(13,27,46,0.08);
-    --shadow-lg: 0 8px 32px rgba(13,27,46,0.12);
+    --shadow: 0 2px 14px rgba(0,0,0,0.35);
+    --shadow-lg: 0 10px 34px rgba(0,0,0,0.5);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 15px; }
+  html, body { height: 100%; background: var(--bg); color: var(--ink); font-family: 'Work Sans', sans-serif; font-size: 15px; }
 
   /* AUTH */
   .auth-wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; background: var(--bg); }
-  .auth-logo { font-family: 'DM Serif Display', serif; font-size: 2.5rem; color: var(--ink); letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+  .auth-logo { font-family: 'Fraunces', serif; font-size: 2.5rem; color: var(--ink); letter-spacing: -0.02em; margin-bottom: 0.25rem; }
   .auth-tagline { font-size: 13px; color: var(--ink-3); margin-bottom: 3rem; letter-spacing: 0.05em; text-transform: uppercase; }
   .auth-card { background: var(--white); border-radius: var(--radius); padding: 2rem; width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); }
-  .auth-title { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 1.5rem; }
+  .auth-title { font-family: 'Fraunces', serif; font-size: 1.6rem; color: var(--ink); margin-bottom: 1.5rem; }
   .field { margin-bottom: 1rem; }
   .field label { display: block; font-size: 12px; font-weight: 500; color: var(--ink-2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
-  .field input, .field select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--ink); background: var(--bg); transition: border-color 0.2s; outline: none; }
-  .field input:focus, .field select:focus { border-color: var(--primary); background: white; }
+  .field input, .field select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); font-family: 'Work Sans', sans-serif; font-size: 15px; color: var(--ink); background: var(--bg); transition: border-color 0.2s; outline: none; }
+  .field input:focus, .field select:focus { border-color: var(--primary); background: var(--white); }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .btn { width: 100%; padding: 14px; border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-  .btn-primary { background: var(--primary); color: white; }
+  .btn { width: 100%; padding: 14px; border: none; border-radius: var(--radius-sm); font-family: 'Work Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-primary { background: var(--primary); color: #10130D; }
   .btn-primary:hover { background: var(--primary-dark); }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
   .auth-switch { text-align: center; margin-top: 1.25rem; font-size: 13px; color: var(--ink-3); }
@@ -67,13 +67,13 @@
   .onboard-wrap { min-height: 100vh; background: var(--bg); padding: 2rem; display: flex; flex-direction: column; align-items: center; }
   .onboard-card { background: var(--white); border-radius: var(--radius); padding: 2rem; width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); margin-top: 2rem; }
   .onboard-step { font-size: 11px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
-  .onboard-title { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--ink); margin-bottom: 0.5rem; line-height: 1.2; }
+  .onboard-title { font-family: 'Fraunces', serif; font-size: 1.8rem; color: var(--ink); margin-bottom: 0.5rem; line-height: 1.2; }
   .onboard-sub { font-size: 14px; color: var(--ink-3); margin-bottom: 1.75rem; line-height: 1.6; }
   .macro-preview { background: var(--bg); border-radius: var(--radius-sm); padding: 1.25rem; margin: 1.25rem 0; }
   .macro-preview-title { font-size: 12px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; }
   .macro-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .macro-preview-item { text-align: center; }
-  .macro-preview-val { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--ink); }
+  .macro-preview-val { font-family: 'Fraunces', serif; font-size: 1.4rem; color: var(--ink); }
   .macro-preview-label { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
 
   /* APP SHELL */
@@ -83,9 +83,9 @@
   /* HEADER */
   .header { padding: 1.25rem 1.25rem 0; display: flex; justify-content: space-between; align-items: flex-start; }
   .header-greeting { font-size: 12px; color: var(--ink-3); font-weight: 500; letter-spacing: 0.04em; }
-  .header-name { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--ink); line-height: 1.2; margin-top: 2px; }
+  .header-name { font-family: 'Fraunces', serif; font-size: 1.5rem; color: var(--ink); line-height: 1.2; margin-top: 2px; }
   .header-date { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
-  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--primary); cursor: pointer; flex-shrink: 0; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 1.1rem; color: var(--primary); cursor: pointer; flex-shrink: 0; }
 
   /* NAV */
   .nav { display: flex; border-bottom: 1.5px solid var(--bg-3); margin: 1.25rem 1.25rem 0; }
@@ -102,11 +102,18 @@
   .ring-canvas-wrap { position: relative; width: 90px; height: 90px; flex-shrink: 0; }
   .ring-canvas-wrap canvas { width: 90px !important; height: 90px !important; }
   .ring-info { flex: 1; }
-  .ring-kcal { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--ink); line-height: 1; }
+  .ring-kcal { font-family: 'Fraunces', serif; font-size: 2rem; color: var(--ink); line-height: 1; }
   .ring-label { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
   .ring-remaining { font-size: 13px; font-weight: 500; margin-top: 8px; }
   .ring-remaining.ok { color: var(--success); }
   .ring-remaining.over { color: var(--danger); }
+
+  /* STREAKS */
+  .streak-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .streak-chip { flex: 1; background: var(--white); border-radius: var(--radius-sm); padding: 10px 14px; text-align: center; box-shadow: var(--shadow); }
+  .streak-num { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; color: var(--primary); display: block; }
+  .streak-chip.dim .streak-num { color: var(--ink-3); }
+  .streak-name { font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.05em; }
 
   /* MACRO BARS */
   .macro-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
@@ -132,11 +139,11 @@
   /* LOG INPUT */
   .log-input-card { background: var(--white); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
   .log-input-title { font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 10px; }
-  .log-textarea { width: 100%; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); padding: 12px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--bg); resize: none; min-height: 100px; outline: none; transition: border-color 0.2s; line-height: 1.6; }
-  .log-textarea:focus { border-color: var(--primary); background: white; }
+  .log-textarea { width: 100%; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); padding: 12px 14px; font-family: 'Work Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--bg); resize: none; min-height: 100px; outline: none; transition: border-color 0.2s; line-height: 1.6; }
+  .log-textarea:focus { border-color: var(--primary); background: var(--white); }
   .log-textarea::placeholder { color: var(--ink-3); }
   .log-actions { display: flex; gap: 8px; margin-top: 10px; }
-  .btn-log { flex: 1; padding: 13px; border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; background: var(--primary); color: white; }
+  .btn-log { flex: 1; padding: 13px; border: none; border-radius: var(--radius-sm); font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; background: var(--primary); color: #10130D; }
   .btn-log:hover { background: var(--primary-dark); }
   .btn-log:disabled { opacity: 0.5; cursor: not-allowed; }
   .loading-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-2); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--ink-3); margin-top: 8px; }
@@ -154,23 +161,27 @@
   .log-item-actions { display: flex; gap: 6px; align-items: center; }
   .btn-del { background: none; border: none; cursor: pointer; color: var(--bg-3); font-size: 18px; line-height: 1; padding: 0; transition: color 0.2s; }
   .btn-del:hover { color: var(--danger); }
-  .btn-edit { background: none; border: none; cursor: pointer; color: var(--bg-3); font-size: 13px; line-height: 1; padding: 0; transition: color 0.2s; font-weight: 500; }
+  .btn-edit { background: none; border: none; cursor: pointer; color: var(--bg-3); font-size: 13px; line-height: 1; padding: 0; transition: color 0.2s; font-weight: 500; white-space: nowrap; }
   .btn-edit:hover { color: var(--primary); }
+  .log-item.pending { opacity: 0.7; }
+  .log-item.error { border: 1px solid var(--danger); }
+  .log-item-error-row { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+  .log-item-error-row .err { margin: 0; flex: 1; }
 
   /* EDIT FORM */
   .edit-form { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--bg-2); }
-  .edit-textarea { width: 100%; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); background: var(--bg); resize: none; min-height: 60px; outline: none; transition: border-color 0.2s; }
-  .edit-textarea:focus { border-color: var(--primary); background: white; }
+  .edit-textarea { width: 100%; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); padding: 10px 12px; font-family: 'Work Sans', sans-serif; font-size: 13px; color: var(--ink); background: var(--bg); resize: none; min-height: 60px; outline: none; transition: border-color 0.2s; }
+  .edit-textarea:focus { border-color: var(--primary); background: var(--white); }
   .edit-actions { display: flex; gap: 8px; margin-top: 8px; }
-  .btn-save-edit { flex: 1; padding: 9px; border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--primary); color: white; transition: all 0.2s; }
-  .btn-cancel-edit { padding: 9px 14px; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; background: white; color: var(--ink-2); transition: all 0.2s; }
+  .btn-save-edit { flex: 1; padding: 9px; border: none; border-radius: var(--radius-sm); font-family: 'Work Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--primary); color: #10130D; transition: all 0.2s; }
+  .btn-cancel-edit { padding: 9px 14px; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); font-family: 'Work Sans', sans-serif; font-size: 13px; cursor: pointer; background: var(--white); color: var(--ink-2); transition: all 0.2s; }
 
   /* MACRO BREAKDOWN MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(13,27,46,0.45); z-index: 100; display: none; align-items: flex-end; justify-content: center; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100; display: none; align-items: flex-end; justify-content: center; }
   .modal-overlay.open { display: flex; }
   .modal-sheet { background: var(--white); border-radius: var(--radius) var(--radius) 0 0; padding: 1.5rem; width: 100%; max-width: 480px; max-height: 80vh; overflow-y: auto; }
   .modal-handle { width: 36px; height: 4px; background: var(--bg-3); border-radius: 2px; margin: 0 auto 1.25rem; }
-  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--ink); margin-bottom: 4px; }
+  .modal-title { font-family: 'Fraunces', serif; font-size: 1.3rem; color: var(--ink); margin-bottom: 4px; }
   .modal-sub { font-size: 12px; color: var(--ink-3); margin-bottom: 1.25rem; }
   .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid var(--bg-2); }
   .breakdown-row:last-child { border-bottom: none; }
@@ -188,7 +199,7 @@
   .history-item { background: var(--white); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow); cursor: pointer; }
   .history-item-top { display: flex; justify-content: space-between; align-items: center; }
   .history-date { font-size: 12px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; }
-  .history-kcal { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--ink); }
+  .history-kcal { font-family: 'Fraunces', serif; font-size: 1.4rem; color: var(--ink); }
   .history-macros { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
   .history-chevron { font-size: 16px; color: var(--ink-3); transition: transform 0.2s; }
   .history-chevron.open { transform: rotate(90deg); }
@@ -206,17 +217,17 @@
   .weight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   .weight-item { background: var(--white); border-radius: var(--radius-sm); padding: 12px 14px; box-shadow: var(--shadow); margin-bottom: 8px; }
   .weight-item-date { font-size: 11px; color: var(--ink-3); margin-bottom: 4px; }
-  .weight-item-val { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--ink); }
+  .weight-item-val { font-family: 'Fraunces', serif; font-size: 1.5rem; color: var(--ink); }
   .weight-item-fat { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
   .chart-card { background: var(--white); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
   .goal-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--primary-light); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--primary); font-weight: 500; margin-bottom: 1rem; }
 
   /* WEEKLY SUMMARY */
   .week-card { background: var(--white); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 12px; box-shadow: var(--shadow); }
-  .week-card-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--ink); margin-bottom: 12px; }
+  .week-card-title { font-family: 'Fraunces', serif; font-size: 1.1rem; color: var(--ink); margin-bottom: 12px; }
   .week-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .week-stat { background: var(--bg); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
-  .week-stat-val { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--ink); }
+  .week-stat-val { font-family: 'Fraunces', serif; font-size: 1.4rem; color: var(--ink); }
   .week-stat-label { font-size: 11px; color: var(--ink-3); margin-top: 3px; }
   .week-macro-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--bg-2); font-size: 13px; }
   .week-macro-row:last-child { border-bottom: none; }
@@ -231,21 +242,23 @@
   /* PROFILE SHEET */
   .profile-menu { position: fixed; inset: 0; z-index: 100; display: none; }
   .profile-menu.open { display: block; }
-  .profile-overlay { position: absolute; inset: 0; background: rgba(13,27,46,0.4); }
+  .profile-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
   .profile-sheet { position: absolute; bottom: 0; left: 0; right: 0; background: var(--white); border-radius: var(--radius) var(--radius) 0 0; padding: 1.5rem; max-width: 480px; margin: 0 auto; }
   .profile-handle { width: 36px; height: 4px; background: var(--bg-3); border-radius: 2px; margin: 0 auto 1.25rem; }
-  .profile-name { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--ink); }
+  .profile-name { font-family: 'Fraunces', serif; font-size: 1.4rem; color: var(--ink); }
   .profile-email { font-size: 13px; color: var(--ink-3); margin-top: 2px; margin-bottom: 1.25rem; }
   .profile-goals { background: var(--bg); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem; }
   .profile-goals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
   .profile-goal-item { text-align: center; }
   .profile-goal-val { font-size: 15px; font-weight: 600; color: var(--ink); }
   .profile-goal-label { font-size: 10px; color: var(--ink-3); margin-top: 1px; }
-  .btn-logout { width: 100%; padding: 13px; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); background: white; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink-2); cursor: pointer; transition: all 0.2s; }
+  .btn-edit-goals { width: 100%; padding: 13px; border: 1.5px solid var(--primary); border-radius: var(--radius-sm); background: var(--white); font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--primary); cursor: pointer; transition: all 0.2s; margin-bottom: 10px; }
+  .btn-edit-goals:hover { background: var(--primary-light); }
+  .btn-logout { width: 100%; padding: 13px; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); background: var(--white); font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink-2); cursor: pointer; transition: all 0.2s; }
   .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
 
   /* TOAST */
-  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 200; transition: transform 0.3s ease; white-space: nowrap; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--white); color: var(--ink); padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 200; transition: transform 0.3s ease; white-space: nowrap; box-shadow: var(--shadow-lg); }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   /* RESET PASSWORD */
@@ -307,9 +320,9 @@
   <div class="onboard-wrap">
     <div style="width:100%;max-width:480px"><div class="auth-logo" style="font-size:1.8rem;padding:0 0 0.25rem">nutri</div></div>
     <div class="onboard-card">
-      <div class="onboard-step">Configuração inicial</div>
-      <div class="onboard-title">Vamos calcular suas metas</div>
-      <div class="onboard-sub">Precisamos de alguns dados para personalizar seu plano.</div>
+      <div class="onboard-step" id="onboard-step-label">Configuração inicial</div>
+      <div class="onboard-title" id="onboard-title-label">Vamos calcular suas metas</div>
+      <div class="onboard-sub" id="onboard-sub-label">Precisamos de alguns dados para personalizar seu plano.</div>
       <div class="field-row">
         <div class="field"><label>Peso atual (kg)</label><input type="number" id="ob-weight" placeholder="82" step="0.1"/></div>
         <div class="field"><label>Altura (cm)</label><input type="number" id="ob-height" placeholder="176"/></div>
@@ -350,6 +363,9 @@
       <div id="ob-err" class="err" style="margin-bottom:10px"></div>
       <button class="btn btn-primary" onclick="calcOnboard()" id="ob-calc-btn">Calcular metas</button>
       <button class="btn btn-primary" onclick="saveOnboard()" id="ob-save-btn" style="display:none;margin-top:10px">Começar →</button>
+      <div id="ob-cancel-wrap" style="display:none;text-align:center;margin-top:14px;">
+        <a onclick="cancelEditGoals()" style="font-size:13px;color:var(--ink-3);cursor:pointer;">Cancelar</a>
+      </div>
     </div>
   </div>
 </div>
@@ -381,6 +397,7 @@
           <div class="ring-remaining" id="ring-remaining">carregando...</div>
         </div>
       </div>
+      <div class="streak-row" id="streak-row"></div>
       <div class="macro-bars" id="macro-bars"></div>
       <div class="hydra-card">
         <div class="hydra-top">
@@ -393,7 +410,6 @@
         <div class="log-input-title">O que você comeu?</div>
         <textarea class="log-textarea" id="log-input" placeholder="Ex: 150g de purê de abóbora, 100g frango grelhado, 2 laranjas...&#10;&#10;Dica: cole a tabela nutricional para mais precisão."></textarea>
         <div id="log-err" class="err"></div>
-        <div id="log-loading" style="display:none"><span class="loading-chip"><span class="spin"></span>Calculando macros...</span></div>
         <div class="log-actions">
           <button class="btn-log" id="log-btn">Registrar ↗</button>
         </div>
@@ -454,6 +470,7 @@
       <div class="section-label" style="margin:0 0 0">Metas diárias</div>
       <div class="profile-goals-grid" id="profile-goals-grid"></div>
     </div>
+    <button class="btn-edit-goals" onclick="openEditGoals()">Editar metas</button>
     <button class="btn-logout" onclick="doLogout()">Sair da conta</button>
   </div>
 </div>
@@ -472,7 +489,9 @@ let currentProfile = null;
 let weightChart = null;
 let todayEntries = [];
 let todayWater = 0;
-let isLoggingFood = false;
+let pendingEntries = [];
+let onboardMode = 'new'; // 'new' | 'edit'
+const PENDING_TIMEOUT_MS = 20000;
 
 // --- INIT ---
 async function init() {
@@ -520,6 +539,23 @@ async function init() {
       showScreen('auth');
     } else if (event === 'USER_UPDATED') {
       await loadProfile();
+    }
+  });
+
+  // Se o app voltar de background (ex: iOS suspendeu ao trocar de app) com
+  // registros presos em "calculando", falha eles em vez de deixar travado.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && pendingEntries.length) {
+      const now = Date.now();
+      let changed = false;
+      pendingEntries.forEach(e => {
+        if (e.status === 'pending' && now - e.startedAt > PENDING_TIMEOUT_MS) {
+          e.controller?.abort();
+          e.status = 'error';
+          changed = true;
+        }
+      });
+      if (changed) renderToday();
     }
   });
 }
@@ -606,7 +642,7 @@ async function doResetPassword() {
   await loadProfile();
 }
 
-// --- ONBOARDING ---
+// --- ONBOARDING / EDIT GOALS ---
 let calculatedGoals = null;
 
 function calcOnboard() {
@@ -644,10 +680,48 @@ function calcOnboard() {
 
 async function saveOnboard() {
   if (!calculatedGoals) return;
-  const name = currentUser.user_metadata?.name || 'Usuário';
-  const { error } = await sb.from('profiles').insert({ id: currentUser.id, name, ...calculatedGoals });
+  let error;
+  if (onboardMode === 'edit') {
+    ({ error } = await sb.from('profiles').update({ ...calculatedGoals }).eq('id', currentUser.id));
+  } else {
+    const name = currentUser.user_metadata?.name || 'Usuário';
+    ({ error } = await sb.from('profiles').insert({ id: currentUser.id, name, ...calculatedGoals }));
+  }
   if (error) { document.getElementById('ob-err').textContent = 'Erro ao salvar. Tente novamente.'; return; }
+  onboardMode = 'new';
   await loadProfile();
+}
+
+function openEditGoals() {
+  closeProfile();
+  onboardMode = 'edit';
+  const p = currentProfile;
+  document.getElementById('ob-weight').value = p.weight_kg ?? '';
+  document.getElementById('ob-height').value = p.height_cm ?? '';
+  document.getElementById('ob-age').value = p.age ?? '';
+  document.getElementById('ob-sex').value = p.sex ?? '';
+  document.getElementById('ob-activity').value = p.activity_level ?? '';
+  document.getElementById('ob-goal-weight').value = p.goal_weight_kg ?? '';
+  document.getElementById('ob-goal-date').value = p.goal_date ?? '';
+  document.getElementById('macro-preview-wrap').style.display = 'none';
+  document.getElementById('ob-calc-btn').textContent = 'Calcular metas';
+  document.getElementById('ob-save-btn').style.display = 'none';
+  document.getElementById('ob-err').textContent = '';
+  document.getElementById('onboard-step-label').textContent = 'Atualizar plano';
+  document.getElementById('onboard-title-label').textContent = 'Vamos recalcular suas metas';
+  document.getElementById('onboard-sub-label').textContent = 'Atualize seus dados e recalcule com base neles.';
+  document.getElementById('ob-cancel-wrap').style.display = 'block';
+  calculatedGoals = null;
+  showScreen('onboard');
+}
+
+function cancelEditGoals() {
+  onboardMode = 'new';
+  document.getElementById('ob-cancel-wrap').style.display = 'none';
+  document.getElementById('onboard-step-label').textContent = 'Configuração inicial';
+  document.getElementById('onboard-title-label').textContent = 'Vamos calcular suas metas';
+  document.getElementById('onboard-sub-label').textContent = 'Precisamos de alguns dados para personalizar seu plano.';
+  showScreen('app');
 }
 
 // --- APP RENDER ---
@@ -709,13 +783,26 @@ function showSection(name) {
 async function loadToday() {
   if (!await ensureSession()) return;
   const today = new Date().toISOString().slice(0, 10);
-  const [{ data: foods }, { data: hydra }] = await Promise.all([
+  const [{ data: foods }, { data: hydra }, streaksResult] = await Promise.all([
     sb.from('food_logs').select('*').eq('user_id', currentUser.id).eq('logged_date', today).order('created_at'),
-    sb.from('hydration_logs').select('*').eq('user_id', currentUser.id).eq('logged_date', today).single()
+    sb.from('hydration_logs').select('*').eq('user_id', currentUser.id).eq('logged_date', today).single(),
+    sb.rpc('get_my_streaks').catch(() => ({ data: null }))
   ]);
   todayEntries = foods || [];
   todayWater = hydra?.water_ml || 0;
   renderToday();
+  renderStreaks(streaksResult?.data?.[0] || null);
+}
+
+function renderStreaks(row) {
+  const wrap = document.getElementById('streak-row');
+  if (!wrap) return;
+  if (!row) { wrap.innerHTML = ''; return; }
+  const chips = [`<div class="streak-chip"><span class="streak-num">${row.my_streak ?? 0}</span><span class="streak-name">${escapeHtml(row.my_name || 'Você')}</span></div>`];
+  if (row.partner_name) {
+    chips.push(`<div class="streak-chip dim"><span class="streak-num">${row.partner_streak ?? 0}</span><span class="streak-name">${escapeHtml(row.partner_name)}</span></div>`);
+  }
+  wrap.innerHTML = chips.join('');
 }
 
 function renderToday() {
@@ -746,12 +833,12 @@ function renderToday() {
     const under = b.val < b.goal;
     let barColor, valColor, statusText;
     if (b.inverted) {
-      // Proteína: verde se atingiu/passou, laranja se abaixo
+      // Proteína: verde se atingiu/passou, âmbar se abaixo
       barColor = under ? 'var(--warning)' : 'var(--prot-color)';
       valColor = under ? 'var(--warning)' : 'var(--prot-color)';
       statusText = over ? '+'+Math.round(b.val-b.goal)+'g acima' : under ? Math.round(b.goal-b.val)+'g restantes' : 'meta atingida ✓';
     } else {
-      // Demais: verde se abaixo, vermelho se passou
+      // Demais: neutro se abaixo, vermelho se passou
       barColor = over ? 'var(--danger)' : b.color;
       valColor = over ? 'var(--danger)' : 'var(--ink)';
       statusText = over ? '+'+Math.round(b.val-b.goal)+'g acima' : Math.round(b.goal-b.val)+'g restantes';
@@ -774,24 +861,27 @@ function renderToday() {
   ).join('');
   document.getElementById('hydra-val').textContent = `${todayWater} / ${p.goal_water}ml`;
 
-  // Food list
+  renderFoodList();
+}
+
+function renderFoodList() {
   const list = document.getElementById('food-log-list');
-  if (!todayEntries.length) { list.innerHTML = '<div class="empty">Nenhum alimento registrado ainda.</div>'; return; }
-  list.innerHTML = todayEntries.map((e,i) => `
+  if (!todayEntries.length && !pendingEntries.length) { list.innerHTML = '<div class="empty">Nenhum alimento registrado ainda.</div>'; return; }
+  const realHtml = todayEntries.map((e) => `
     <div class="log-item" id="log-item-${e.id}">
       <div class="log-item-top">
         <div>
-          <div class="log-item-name">${e.name}</div>
+          <div class="log-item-name">${escapeHtml(e.name)}</div>
           <div class="log-item-macros">P ${Math.round(e.prot)}g · C ${Math.round(e.carb)}g · G ${Math.round(e.fat)}g · Açúcar ${Math.round(e.sugar)}g</div>
         </div>
         <div class="log-item-actions">
           <div class="log-item-kcal">${Math.round(e.kcal)} kcal</div>
-          <button class="btn-edit" onclick="toggleEdit('${e.id}','${e.name.replace(/'/g,"\\'")}')">editar</button>
+          <button class="btn-edit" onclick="toggleEdit('${e.id}')">editar</button>
           <button class="btn-del" onclick="deleteEntry('${e.id}')">×</button>
         </div>
       </div>
       <div class="edit-form" id="edit-${e.id}" style="display:none">
-        <textarea class="edit-textarea" id="edit-text-${e.id}" placeholder="Descreva novamente o que comeu...">${e.name}</textarea>
+        <textarea class="edit-textarea" id="edit-text-${e.id}" placeholder="Descreva novamente o que comeu...">${escapeHtml(e.name)}</textarea>
         <div class="edit-actions">
           <button class="btn-save-edit" onclick="saveEdit('${e.id}')">Recalcular e salvar</button>
           <button class="btn-cancel-edit" onclick="toggleEdit('${e.id}')">Cancelar</button>
@@ -800,6 +890,32 @@ function renderToday() {
       </div>
     </div>`
   ).join('');
+  const pendingHtml = pendingEntries.map(e => {
+    if (e.status === 'error') {
+      return `<div class="log-item error">
+        <div class="log-item-top">
+          <div class="log-item-name">${escapeHtml(e.text)}</div>
+          <button class="btn-del" onclick="dismissEntry('${e.id}')">×</button>
+        </div>
+        <div class="log-item-error-row">
+          <span class="err">Não deu certo — tente de novo.</span>
+          <button class="btn-edit" onclick="retryEntry('${e.id}')">tentar de novo</button>
+        </div>
+      </div>`;
+    }
+    return `<div class="log-item pending">
+      <div class="log-item-top">
+        <div class="log-item-name">${escapeHtml(e.text)}</div>
+        <button class="btn-del" onclick="dismissEntry('${e.id}')" title="cancelar">×</button>
+      </div>
+      <div class="loading-chip"><span class="spin"></span>Calculando...</div>
+    </div>`;
+  }).join('');
+  list.innerHTML = realHtml + pendingHtml;
+}
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function renderRing(val, goal) {
@@ -813,10 +929,10 @@ function renderRing(val, goal) {
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, 90, 90);
   ctx.beginPath(); ctx.arc(45, 45, 36, 0, Math.PI*2);
-  ctx.strokeStyle = '#E4EBF5'; ctx.lineWidth = 7; ctx.stroke();
+  ctx.strokeStyle = '#33372A'; ctx.lineWidth = 7; ctx.stroke();
   if (pct > 0) {
     ctx.beginPath(); ctx.arc(45, 45, 36, -Math.PI/2, -Math.PI/2 + Math.PI*2*pct);
-    ctx.strokeStyle = pct >= 1 ? '#C8502A' : '#2563EB';
+    ctx.strokeStyle = pct >= 1 ? '#C25B4E' : '#4C8567';
     ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.stroke();
   }
 }
@@ -831,43 +947,94 @@ async function toggleCup(idx) {
   renderToday();
 }
 
-async function logFood() {
-  if (isLoggingFood) return;
-  if (!await ensureSession()) return;
+// --- FOOD LOGGING (chat-style quick add, per-entry, with timeout so a stuck
+// request never freezes the input — this replaces the old single blocking
+// call that could hang forever if iOS suspended the tab mid-request) ---
+
+function genId() { return 'p' + Date.now() + Math.random().toString(36).slice(2, 8); }
+
+async function fetchMacros(text, signal) {
+  const resp = await fetch(FUNCTION_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}` },
+    body: JSON.stringify({ text, type: 'macros' }),
+    signal
+  });
+  const parsed = await resp.json();
+  if (parsed.error) throw new Error(parsed.error);
+  return parsed;
+}
+
+async function submitFoodEntry() {
   const input = document.getElementById('log-input');
   const errEl = document.getElementById('log-err');
-  const loadEl = document.getElementById('log-loading');
-  const btn = document.getElementById('log-btn');
   const text = input.value.trim();
   if (!text) { errEl.textContent = 'Digite o que você comeu.'; return; }
+  if (!await ensureSession()) return;
   errEl.textContent = '';
-  isLoggingFood = true;
-  btn.disabled = true;
-  loadEl.style.display = 'block';
+  input.value = '';
+  const id = genId();
+  pendingEntries.push({ id, text, status: 'pending', startedAt: Date.now(), controller: null });
+  renderFoodList();
+  runFoodCalc(id, text);
+}
+
+async function runFoodCalc(id, text) {
+  const entry = pendingEntries.find(e => e.id === id);
+  if (!entry) return;
+  const controller = new AbortController();
+  entry.controller = controller;
+  const timeoutId = setTimeout(() => controller.abort(), PENDING_TIMEOUT_MS);
   try {
-    const resp = await fetch(FUNCTION_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}` },
-      body: JSON.stringify({ text, type: 'macros' })
-    });
-    const parsed = await resp.json();
-    if (parsed.error) throw new Error(parsed.error);
+    const parsed = await fetchMacros(text, controller.signal);
+    clearTimeout(timeoutId);
+    if (!pendingEntries.find(e => e.id === id)) return; // dismissed/retried elsewhere meanwhile
     const today = new Date().toISOString().slice(0,10);
-    const { error } = await sb.from('food_logs').insert({ user_id: currentUser.id, logged_date: today, ...parsed });
+    const { data, error } = await sb.from('food_logs').insert({ user_id: currentUser.id, logged_date: today, ...parsed }).select().single();
     if (error) throw error;
-    input.value = '';
-    await loadToday();
-    showToast('Registrado!');
-  } catch(e) {
-    errEl.textContent = 'Erro ao calcular macros. Tente novamente.';
-  } finally {
-    isLoggingFood = false;
-    btn.disabled = false;
-    loadEl.style.display = 'none';
+    pendingEntries = pendingEntries.filter(e => e.id !== id);
+    todayEntries.push(data);
+    renderToday();
+    showUndoToast(data);
+  } catch (e) {
+    clearTimeout(timeoutId);
+    const stillPending = pendingEntries.find(e => e.id === id);
+    if (stillPending) { stillPending.status = 'error'; renderFoodList(); }
   }
 }
 
-function toggleEdit(id, name) {
+function retryEntry(id) {
+  const entry = pendingEntries.find(e => e.id === id);
+  if (!entry) return;
+  entry.status = 'pending';
+  entry.startedAt = Date.now();
+  renderFoodList();
+  runFoodCalc(id, entry.text);
+}
+
+function dismissEntry(id) {
+  const entry = pendingEntries.find(e => e.id === id);
+  if (entry?.controller) entry.controller.abort();
+  pendingEntries = pendingEntries.filter(e => e.id !== id);
+  renderFoodList();
+}
+
+function showUndoToast(entry) {
+  const t = document.getElementById('toast');
+  t.innerHTML = `Registrado! <button onclick="undoLastEntry('${entry.id}')" style="background:none;border:none;color:var(--primary);text-decoration:underline;font-weight:600;margin-left:8px;cursor:pointer;padding:0;font-size:13px;">Desfazer</button>`;
+  t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => t.classList.remove('show'), 4500);
+}
+
+async function undoLastEntry(id) {
+  document.getElementById('toast').classList.remove('show');
+  await sb.from('food_logs').delete().eq('id', id).eq('user_id', currentUser.id);
+  todayEntries = todayEntries.filter(e => e.id !== id);
+  renderToday();
+}
+
+function toggleEdit(id) {
   const el = document.getElementById('edit-'+id);
   if (!el) return;
   const isOpen = el.style.display !== 'none';
@@ -882,19 +1049,17 @@ async function saveEdit(id) {
   if(errEl) errEl.textContent = '';
   const btn = document.querySelector(`#edit-${id} .btn-save-edit`);
   if(btn) { btn.disabled = true; btn.textContent = 'Recalculando...'; }
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), PENDING_TIMEOUT_MS);
   try {
-    const resp = await fetch(FUNCTION_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}` },
-      body: JSON.stringify({ text, type: 'macros' })
-    });
-    const parsed = await resp.json();
-    if (parsed.error) throw new Error(parsed.error);
+    const parsed = await fetchMacros(text, controller.signal);
+    clearTimeout(timeoutId);
     const { error } = await sb.from('food_logs').update({ ...parsed }).eq('id', id);
     if (error) throw error;
     await loadToday();
     showToast('Atualizado!');
   } catch(e) {
+    clearTimeout(timeoutId);
     if(errEl) errEl.textContent = 'Erro ao recalcular. Tente novamente.';
     if(btn) { btn.disabled = false; btn.textContent = 'Recalcular e salvar'; }
   }
@@ -922,7 +1087,7 @@ function openBreakdown(macro, label) {
       const pct = total > 0 ? Math.round((val/total)*100) : 0;
       return `<div class="breakdown-row">
         <div style="flex:1">
-          <div class="breakdown-name">${e.name}</div>
+          <div class="breakdown-name">${escapeHtml(e.name)}</div>
           <div class="breakdown-bar"><div class="breakdown-bar-fill" style="width:${pct}%;background:${colorMap[macro]||'var(--primary)'}"></div></div>
         </div>
         <div style="display:flex;align-items:center;gap:4px;margin-left:12px">
@@ -958,7 +1123,7 @@ async function loadHistory() {
     const label = isToday ? 'Hoje' : d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'short'});
     const entryRows = entries.map(e => `
       <div class="history-entry">
-        <div class="history-entry-name">${e.name}</div>
+        <div class="history-entry-name">${escapeHtml(e.name)}</div>
         <div class="history-entry-macros">${Math.round(e.kcal)} kcal · P ${Math.round(e.prot)}g · C ${Math.round(e.carb)}g · G ${Math.round(e.fat)}g</div>
       </div>`).join('');
     return `<div class="history-item" onclick="toggleHistoryDetail('${date}')">
@@ -1015,8 +1180,8 @@ function renderWeightChart(records) {
   const ctx = document.getElementById('weight-chart').getContext('2d');
   weightChart = new Chart(ctx, {
     type: 'line',
-    data: { labels, datasets: [{ data: weights, borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,0.08)', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#2563EB', borderWidth: 2 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min:mn, max:mx, ticks:{ font:{size:11}, color:'#6B7E99' }, grid:{color:'#E4EBF5'} }, x: { ticks:{ font:{size:11}, color:'#6B7E99', maxRotation:45 }, grid:{display:false} } } }
+    data: { labels, datasets: [{ data: weights, borderColor: '#4C8567', backgroundColor: 'rgba(76,133,103,0.14)', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#4C8567', borderWidth: 2 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min:mn, max:mx, ticks:{ font:{size:11}, color:'#8A8570' }, grid:{color:'#33372A'} }, x: { ticks:{ font:{size:11}, color:'#8A8570', maxRotation:45 }, grid:{display:false} } } }
   });
 }
 
@@ -1122,13 +1287,14 @@ async function loadWeeklySummary() {
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// Bind log button com proteção contra duplo clique
+// Bind log button com proteção contra duplo clique acidental
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('log-btn');
-  if (btn) btn.addEventListener('click', logFood);
+  if (btn) btn.addEventListener('click', submitFoodEntry);
 });
 
 init();

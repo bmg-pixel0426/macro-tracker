@@ -783,15 +783,28 @@ function showSection(name) {
 async function loadToday() {
   if (!await ensureSession()) return;
   const today = new Date().toISOString().slice(0, 10);
-  const [{ data: foods }, { data: hydra }, streaksResult] = await Promise.all([
+  // Promise.allSettled instead of Promise.all: if one of these three calls
+  // fails (or the network hiccups), it no longer silently blocks the other
+  // two from rendering — each is handled independently and logged so a
+  // problem shows up in the console instead of just leaving the screen stuck
+  // on its loading placeholders.
+  const results = await Promise.allSettled([
     sb.from('food_logs').select('*').eq('user_id', currentUser.id).eq('logged_date', today).order('created_at'),
     sb.from('hydration_logs').select('*').eq('user_id', currentUser.id).eq('logged_date', today).single(),
-    sb.rpc('get_my_streaks').catch(() => ({ data: null }))
+    sb.rpc('get_my_streaks')
   ]);
-  todayEntries = foods || [];
-  todayWater = hydra?.water_ml || 0;
+  const foodsRes = results[0].status === 'fulfilled' ? results[0].value : { data: null, error: results[0].reason };
+  const hydraRes = results[1].status === 'fulfilled' ? results[1].value : { data: null, error: results[1].reason };
+  const streaksRes = results[2].status === 'fulfilled' ? results[2].value : { data: null, error: results[2].reason };
+
+  if (foodsRes.error) console.error('[nutri] food_logs load failed:', foodsRes.error);
+  if (hydraRes.error && hydraRes.error.code !== 'PGRST116') console.error('[nutri] hydration_logs load failed:', hydraRes.error);
+  if (streaksRes.error) console.error('[nutri] get_my_streaks load failed:', streaksRes.error);
+
+  todayEntries = foodsRes.data || [];
+  todayWater = hydraRes.data?.water_ml || 0;
   renderToday();
-  renderStreaks(streaksResult?.data?.[0] || null);
+  renderStreaks(streaksRes.data?.[0] || null);
 }
 
 function renderStreaks(row) {
@@ -1207,10 +1220,16 @@ async function loadWeeklySummary() {
   const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
   const startDate = sevenDaysAgo.toISOString().slice(0,10);
 
-  const [{ data: foods }, { data: weights }] = await Promise.all([
+  const weekResults = await Promise.allSettled([
     sb.from('food_logs').select('*').eq('user_id', currentUser.id).gte('logged_date', startDate),
     sb.from('weight_logs').select('*').eq('user_id', currentUser.id).order('logged_at', { ascending: false }).limit(10)
   ]);
+  const foodsWeekRes = weekResults[0].status === 'fulfilled' ? weekResults[0].value : { data: null, error: weekResults[0].reason };
+  const weightsWeekRes = weekResults[1].status === 'fulfilled' ? weekResults[1].value : { data: null, error: weekResults[1].reason };
+  if (foodsWeekRes.error) console.error('[nutri] weekly food_logs load failed:', foodsWeekRes.error);
+  if (weightsWeekRes.error) console.error('[nutri] weekly weight_logs load failed:', weightsWeekRes.error);
+  const foods = foodsWeekRes.data;
+  const weights = weightsWeekRes.data;
 
   if (!foods?.length) { el.innerHTML = '<div class="empty">Nenhum dado esta semana ainda.</div>'; return; }
 

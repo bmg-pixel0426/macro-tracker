@@ -465,7 +465,7 @@
 
       <div class="chart-card">
         <div class="dash-card-title">Calorias por dia</div>
-        <canvas id="history-kcal-chart" height="180"></canvas>
+        <canvas id="history-kcal-chart" height="130"></canvas>
       </div>
 
       <div class="dash-row">
@@ -1361,7 +1361,7 @@ function renderHistoryDashboard(foods, habitRows, startDate) {
 
   renderHistoryKcalChart(days, kcalByDay, p.goal_kcal);
   renderVitaminsRing(days, habitsByDay);
-  renderExerciseGrid(days, habitsByDay);
+  renderExerciseGrid([...days].reverse(), habitsByDay); // today first, oldest last
   renderCaffeineAvg(days, habitsByDay);
 }
 

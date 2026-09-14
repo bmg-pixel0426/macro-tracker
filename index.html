@@ -115,6 +115,18 @@
   .streak-chip.dim .streak-num { color: var(--ink-3); }
   .streak-name { font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.05em; }
 
+  /* HABITS */
+  .habits-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
+  .habit-card { background: var(--white); border-radius: var(--radius-sm); padding: 12px 6px; text-align: center; box-shadow: var(--shadow); cursor: pointer; transition: all 0.15s; }
+  .habit-card:active { transform: scale(0.97); }
+  .habit-card.active { background: var(--primary-light); }
+  .habit-icon { font-size: 22px; line-height: 1; margin-bottom: 5px; }
+  .habit-label { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .habit-card.active .habit-label { color: var(--primary); font-weight: 600; }
+  .habit-picker-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .habit-picker-opt { width: 100%; padding: 13px; border: 1.5px solid var(--bg-3); border-radius: var(--radius-sm); background: var(--bg); color: var(--ink); font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; text-align: left; transition: all 0.15s; }
+  .habit-picker-opt.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 600; }
+
   /* MACRO BARS */
   .macro-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
   .macro-bar-card { background: var(--white); border-radius: var(--radius-sm); padding: 12px 14px; box-shadow: var(--shadow); cursor: pointer; transition: transform 0.15s; }
@@ -399,6 +411,20 @@
       </div>
       <div class="streak-row" id="streak-row"></div>
       <div class="macro-bars" id="macro-bars"></div>
+      <div class="habits-row" id="habits-row">
+        <div class="habit-card" id="habit-vitamins" onclick="toggleVitamins()">
+          <div class="habit-icon">💊</div>
+          <div class="habit-label">Vitaminas</div>
+        </div>
+        <div class="habit-card" id="habit-exercise" onclick="openHabitPicker('exercise')">
+          <div class="habit-icon">🏋🏻‍♀️</div>
+          <div class="habit-label" id="habit-exercise-label">Exercício</div>
+        </div>
+        <div class="habit-card" id="habit-caffeine" onclick="openHabitPicker('caffeine')">
+          <div class="habit-icon">☕️</div>
+          <div class="habit-label" id="habit-caffeine-label">Cafeína</div>
+        </div>
+      </div>
       <div class="hydra-card">
         <div class="hydra-top">
           <div class="hydra-title">Hidratação 💧</div>
@@ -459,6 +485,15 @@
   </div>
 </div>
 
+<!-- HABIT PICKER MODAL -->
+<div class="modal-overlay" id="habit-picker-modal" onclick="closeHabitPicker(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="habit-picker-title">—</div>
+    <div class="habit-picker-list" id="habit-picker-list"></div>
+  </div>
+</div>
+
 <!-- PROFILE SHEET -->
 <div class="profile-menu" id="profile-menu">
   <div class="profile-overlay" onclick="closeProfile()"></div>
@@ -489,6 +524,7 @@ let currentProfile = null;
 let weightChart = null;
 let todayEntries = [];
 let todayWater = 0;
+let todayHabits = { vitamins: false, exercise_type: null, caffeine_count: 0 };
 let pendingEntries = [];
 let onboardMode = 'new'; // 'new' | 'edit'
 const PENDING_TIMEOUT_MS = 20000;
@@ -791,20 +827,106 @@ async function loadToday() {
   const results = await Promise.allSettled([
     sb.from('food_logs').select('*').eq('user_id', currentUser.id).eq('logged_date', today).order('created_at'),
     sb.from('hydration_logs').select('*').eq('user_id', currentUser.id).eq('logged_date', today).single(),
-    sb.rpc('get_my_streaks')
+    sb.rpc('get_my_streaks'),
+    sb.from('habit_logs').select('*').eq('user_id', currentUser.id).eq('logged_date', today).single()
   ]);
   const foodsRes = results[0].status === 'fulfilled' ? results[0].value : { data: null, error: results[0].reason };
   const hydraRes = results[1].status === 'fulfilled' ? results[1].value : { data: null, error: results[1].reason };
   const streaksRes = results[2].status === 'fulfilled' ? results[2].value : { data: null, error: results[2].reason };
+  const habitsRes = results[3].status === 'fulfilled' ? results[3].value : { data: null, error: results[3].reason };
 
   if (foodsRes.error) console.error('[nutri] food_logs load failed:', foodsRes.error);
   if (hydraRes.error && hydraRes.error.code !== 'PGRST116') console.error('[nutri] hydration_logs load failed:', hydraRes.error);
   if (streaksRes.error) console.error('[nutri] get_my_streaks load failed:', streaksRes.error);
+  if (habitsRes.error && habitsRes.error.code !== 'PGRST116') console.error('[nutri] habit_logs load failed:', habitsRes.error);
 
   todayEntries = foodsRes.data || [];
   todayWater = hydraRes.data?.water_ml || 0;
+  todayHabits = {
+    vitamins: habitsRes.data?.vitamins || false,
+    exercise_type: habitsRes.data?.exercise_type || null,
+    caffeine_count: habitsRes.data?.caffeine_count || 0
+  };
   renderToday();
   renderStreaks(streaksRes.data?.[0] || null);
+  renderHabits();
+}
+
+// --- HABITS (vitamins / exercise / caffeine) ---
+function renderHabits() {
+  const vit = document.getElementById('habit-vitamins');
+  if (!vit) return;
+  vit.classList.toggle('active', !!todayHabits.vitamins);
+
+  const ex = document.getElementById('habit-exercise');
+  const exLabel = document.getElementById('habit-exercise-label');
+  ex.classList.toggle('active', !!todayHabits.exercise_type);
+  exLabel.textContent = todayHabits.exercise_type || 'Exercício';
+
+  const caf = document.getElementById('habit-caffeine');
+  const cafLabel = document.getElementById('habit-caffeine-label');
+  caf.classList.toggle('active', !!todayHabits.caffeine_count);
+  cafLabel.textContent = todayHabits.caffeine_count ? `${todayHabits.caffeine_count} café${todayHabits.caffeine_count > 1 ? 's' : ''}` : 'Cafeína';
+}
+
+async function saveHabits() {
+  const today = new Date().toISOString().slice(0, 10);
+  const { error } = await sb.from('habit_logs').upsert({
+    user_id: currentUser.id,
+    logged_date: today,
+    vitamins: todayHabits.vitamins,
+    exercise_type: todayHabits.exercise_type,
+    caffeine_count: todayHabits.caffeine_count,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'user_id,logged_date' });
+  if (error) { console.error('[nutri] habit_logs save failed:', error); showToast('Erro ao salvar'); }
+}
+
+async function toggleVitamins() {
+  if (!await ensureSession()) return;
+  todayHabits.vitamins = !todayHabits.vitamins;
+  renderHabits();
+  await saveHabits();
+}
+
+function openHabitPicker(type) {
+  const title = document.getElementById('habit-picker-title');
+  const list = document.getElementById('habit-picker-list');
+  if (type === 'exercise') {
+    title.textContent = 'Que exercício você fez?';
+    const opts = ['Academia', 'Natação', 'Caminhada', 'Corrida', 'Vôlei'];
+    list.innerHTML = opts.map(o =>
+      `<button class="habit-picker-opt${todayHabits.exercise_type === o ? ' selected' : ''}" onclick="selectExercise('${o}')">${o}</button>`
+    ).join('');
+  } else {
+    title.textContent = 'Quantos cafés hoje?';
+    list.innerHTML = [1, 2, 3].map(n =>
+      `<button class="habit-picker-opt${todayHabits.caffeine_count === n ? ' selected' : ''}" onclick="selectCaffeine(${n})">${n} café${n > 1 ? 's' : ''}</button>`
+    ).join('');
+  }
+  document.getElementById('habit-picker-modal').classList.add('open');
+}
+
+function closeHabitPicker(e) {
+  if (!e || e.target === document.getElementById('habit-picker-modal')) {
+    document.getElementById('habit-picker-modal').classList.remove('open');
+  }
+}
+
+async function selectExercise(type) {
+  if (!await ensureSession()) return;
+  todayHabits.exercise_type = todayHabits.exercise_type === type ? null : type;
+  renderHabits();
+  closeHabitPicker();
+  await saveHabits();
+}
+
+async function selectCaffeine(n) {
+  if (!await ensureSession()) return;
+  todayHabits.caffeine_count = todayHabits.caffeine_count === n ? 0 : n;
+  renderHabits();
+  closeHabitPicker();
+  await saveHabits();
 }
 
 function renderStreaks(row) {

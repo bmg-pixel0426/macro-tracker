@@ -465,7 +465,9 @@
 
       <div class="chart-card">
         <div class="dash-card-title">Calorias por dia</div>
-        <canvas id="history-kcal-chart" height="180"></canvas>
+        <div style="position:relative; height:180px;">
+          <canvas id="history-kcal-chart"></canvas>
+        </div>
       </div>
 
       <div class="dash-row">
@@ -1340,12 +1342,16 @@ const EXERCISE_COLORS = { 'Academia': '#4C8567', 'Natação': '#6E7FA0', 'Caminh
 
 function renderHistoryDashboard(foods, habitRows, startDate) {
   const p = currentProfile;
-  // Full 30-day range so a day with nothing logged shows as a real gap
-  // (zero kcal, vitamins not taken) rather than being skipped entirely.
+  // Full 30-day range ENDING TODAY (not the query's -30 lower bound, which is
+  // one day earlier than needed for a fixed 30-cell grid). Anchored in UTC,
+  // matching the same convention every write in this app uses for
+  // logged_date (new Date().toISOString().slice(0,10)) — so "today" here is
+  // guaranteed to line up with the actual stored rows, in any timezone.
+  const todayStr = new Date().toISOString().slice(0, 10);
   const days = [];
-  const start = new Date(startDate + 'T12:00:00');
-  for (let i = 0; i < 30; i++) {
-    const d = new Date(start); d.setDate(d.getDate() + i);
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(todayStr + 'T12:00:00Z');
+    d.setUTCDate(d.getUTCDate() - i);
     days.push(d.toISOString().slice(0, 10));
   }
 
